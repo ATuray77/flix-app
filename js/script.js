@@ -2,8 +2,9 @@ const global = {
     currentPage: window.location.pathname,
 };
 
+//Fetch data from TMDB API
 async function displayPopularMovies(){
-    const { results }= await fetchAPIData('movie/now_playing');
+    const { results }= await fetchAPIData('movie/popular');
     
     results.forEach((movie) => {
         const div = document.createElement('div');
@@ -37,12 +38,27 @@ async function displayPopularMovies(){
 
 //Fetch data from TMDB API
 async function fetchAPIData(endpoint) {
+    //Only use this key for development. Store your key and make requests from a server
     const API_KEY = 'defc647d519b7d62ebf91cff4c905625';
     const API_URL = 'https://api.themoviedb.org/3/';
 
+    showSpinner();
+
     const response = await fetch(`${API_URL}${endpoint}?api_key=${API_KEY}&language=en-US`);
     const data = await response.json();
+
+    hideSpinner();
+
     return data;
+}
+
+//spinner functions
+function showSpinner() {
+    document.querySelector('.spinner').classList.add('show');
+}
+
+function hideSpinner() {
+    document.querySelector('.spinner').classList.remove('show');
 }
 
 //Highlight active link
