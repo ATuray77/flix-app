@@ -1,7 +1,11 @@
 const global = {
     currentPage: window.location.pathname,
 };
-console.log(global.currentPage)
+
+async function displayPopularMovies(){
+    const { results }= await fetchAPIData('movie/popular');
+    console.log(results)
+}
 
 //Fetch data from TMDB API
 async function fetchAPIData(endpoint) {
@@ -28,7 +32,7 @@ function init() {
     switch(global.currentPage) {
         case '/':
         case '/index.html':
-        console.log('Home')
+        displayPopularMovies();
         break;
 
         case '/shows.html':
