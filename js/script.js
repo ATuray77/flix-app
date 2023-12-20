@@ -75,7 +75,7 @@ async function displayMovieDetails(){
     const movieId = window.location.search.split('=')[1]; //isolate the id using 'split' method
     
     const movie = await fetchAPIData(`movie/${movieId}`); //fetch the data(movie id)
-
+    console.log(movie)
     //overlay for background image
     displayBackgroundImage('movie', movie.backdrop_path);
 
@@ -182,8 +182,8 @@ async function displayShowDetails(){
         <div class="details-bottom">
           <h2>Show Info</h2>
           <ul>
-            <li><span class="text-secondary">Number of Episodes:</span>${show.number_of_episodes}</li>
-            <li><span class="text-secondary">Last Episode to Air:</span> $${show.last_episode_to_air}</li>
+            <li><span class="text-secondary">Number of Episodes:</span> ${show.number_of_episodes}</li>
+            <li><span class="text-secondary">Last Episode to Air:</span> ${show.last_episode_to_air.name}</li>
             <li><span class="text-secondary">Status:</span> ${show.status}</li>
           </ul>
           <h4>Production Companies</h4>
@@ -224,6 +224,55 @@ function displayBackgroundImage(type, backgroundPath) {
     }
 
 }
+
+//slider movies starts
+
+async function displaySlider() {
+    const { results } = await fetchAPIData('movie/now_playing');
+    results.forEach((movie) => {
+        const div = document.createElement('div')
+        div.classList.add('swiper-slide')
+        div.innerHTML = `
+        <a href="movie-details.html?id= ${movie.id}">
+            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+        </a>
+        <h4 class="swiper-rating">
+            <i class="fas fa-star text-secondary"></i> ${movie.vote_average} / 10
+        </h4>
+            `;
+        document.querySelector('.swiper-wrapper').appendChild(div);
+
+        initSwiper();
+    });
+}
+
+
+//creates initSwiper function
+function initSwiper() {
+    const swiper = new Swiper('.swiper', {
+        slidesPerView: 1, 
+        spaceBetween: 30,
+        freeMode: true,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnINteraction: false
+        },
+        breakpoints: {
+            500: {
+                slidesPerView: 2
+            },
+            700: {
+                slidesPerView: 3
+            },
+            1200: {
+                slidesPerView: 4
+            }
+        }
+    } )
+}
+
+//slider ends
 //Fetch data from TMDB API
 async function fetchAPIData(endpoint) {
     //Only use this key for development. Store your key and make requests from a server
@@ -268,6 +317,7 @@ function init() {
     switch(global.currentPage) {
         case '/':
         case '/index.html':
+        displaySlider()
         displayPopularMovies();
         break;
 
