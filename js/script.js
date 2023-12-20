@@ -1,5 +1,11 @@
 const global = {
     currentPage: window.location.pathname,
+    search: {
+        term: '',
+        type: '',
+        page: 1,
+        totalPages: 1
+    }
 };
 
 //Fetch data from TMDB API. Function displaying popular movies
@@ -247,12 +253,28 @@ async function displaySlider() {
 }
 
 
+//Search Movies/shows functions starts
+async function search(){
+ const queryString = window.location.search;
+ const urlParams = new URLSearchParams(queryString);
+ global.search.type = urlParams.get('type');
+ global.search.type = urlParams.get('search-term');
+
+ if (global.search.term !== '' && global.search.term !== null) {
+    //@todo - make request and display results
+ } else {
+    alert('please enter a search-term')
+ }
+}
+
+//Search Movies function ends
+
 //creates initSwiper function
 function initSwiper() {
     const swiper = new Swiper('.swiper', {
         slidesPerView: 1, 
         spaceBetween: 30,
-        freeMode: true,
+        freeMode: false,
         loop: true,
         autoplay: {
             delay: 4000,
@@ -334,7 +356,7 @@ function init() {
         break;
 
         case '/search.html':
-        console.log('Search');
+        search();
         break;
     }
     highLightActiveLink();
