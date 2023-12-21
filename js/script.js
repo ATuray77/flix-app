@@ -333,10 +333,15 @@ function displayPagination() {
     div.innerHTML = `
     <button class="btn btn-primary" id="prev">Prev</button>
     <button class="btn btn-primary" id="next">Next</button>
-    <div class="page-counter">Page ${global.search.page} of ${global.search.total_pages}</div>
+    <div class="page-counter">Page ${global.search.page} of ${global.search.totalPages}</div>
     `;
 
-    document.querySelector('#pagination').appendChild(div)
+    document.querySelector('#pagination').appendChild(div);
+
+    //disable prev button if on first page
+    if(global.search.page === 1) {
+        document.querySelector('#prev').disabled = true
+    }
 }
 //function to display pagination ends
 //function to display search results ends
