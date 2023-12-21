@@ -4,7 +4,11 @@ const global = {
         term: '',
         type: '',
         page: 1,
-        totalPages: 1
+        totalPages: 1,
+    },
+    api: {
+        apiKey: 'defc647d519b7d62ebf91cff4c905625',
+        apiURL: 'https://api.themoviedb.org/3/'
     }
 };
 
@@ -258,13 +262,28 @@ async function search(){
  const queryString = window.location.search;
  const urlParams = new URLSearchParams(queryString);
  global.search.type = urlParams.get('type');
- global.search.type = urlParams.get('search-term');
+ global.search.term = urlParams.get('search-term');
 
- if (global.search.term !== '' && global.search.term !== null) {
-    //@todo - make request and display results
+ if (global.search.term !== ' ' && global.search.term !== null) {
+    const { results, total_pages, page } = await searchAPIData();
+
+    if(results.length === 0) {
+        showAlert('No results found');
+        return;
+    } 
+
+    displaySearchResults(results);
+
+    document.querySelector('#search-term').value = ' ';
+
+
  } else {
-    alert('please enter a search-term')
+    showAlert('please enter a search-term');
  }
+}
+
+function displaySearchResults(results) {
+    
 }
 
 //Search Movies function ends
@@ -293,13 +312,13 @@ function initSwiper() {
         }
     } )
 }
-
 //slider ends
+
 //Fetch data from TMDB API
 async function fetchAPIData(endpoint) {
     //Only use this key for development. Store your key and make requests from a server
-    const API_KEY = 'defc647d519b7d62ebf91cff4c905625';
-    const API_URL = 'https://api.themoviedb.org/3/';
+    const API_KEY = global.api.apiKey;
+    const API_URL = global.api.apiURL;
 
     showSpinner();
 
@@ -310,6 +329,23 @@ async function fetchAPIData(endpoint) {
 
     return data;
 }
+
+//Make requests to search - starts
+async function searchAPIData() {
+    
+    const API_KEY = global.api.apiKey;
+    const API_URL = global.api.apiURL;
+
+    showSpinner();
+
+    const response = await fetch(`${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`);
+    const data = await response.json();
+
+    hideSpinner();
+
+    return data;
+}
+//Ends
 
 //spinner functions
 function showSpinner() {
@@ -330,6 +366,17 @@ function highLightActiveLink() {
     });
 }
 
+
+//show Alert
+function showAlert(message, className = 'error'){
+    const alertEl = document.createElement('div');
+    alertEl.classList.add('alert', className);
+    alertEl.appendChild(document.createTextNode(message));
+    document.querySelector('#alert').appendChild(alertEl);
+
+    setTimeout(() => alertEl.remove(), 3000);
+
+}
 //function adds commas to number
 function addCommasToNumber(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
