@@ -322,7 +322,23 @@ function displaySearchResults(results) {
       document.querySelector('#search-results').appendChild(div);
 
     });
+
+    displayPagination();
 }
+//function to display pagination starts
+
+function displayPagination() {
+    const div = document.createElement('div')
+    div.classList.add('pagination');
+    div.innerHTML = `
+    <button class="btn btn-primary" id="prev">Prev</button>
+    <button class="btn btn-primary" id="next">Next</button>
+    <div class="page-counter">Page ${global.search.page} of ${global.search.total_pages}</div>
+    `;
+
+    document.querySelector('#pagination').appendChild(div)
+}
+//function to display pagination ends
 //function to display search results ends
 //Search Movies function ends
 
