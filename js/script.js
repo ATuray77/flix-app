@@ -360,6 +360,13 @@ function displayPagination() {
         const {results, total_pages } = await searchAPIData();
         displaySearchResults(results);
     })
+
+     //Previous page - adding event listener to the 'prev' button
+     document.querySelector('#prev').addEventListener('click', async() => {
+        global.search.page--;
+        const {results, total_pages } = await searchAPIData();
+        displaySearchResults(results);
+    })
 }
 
 //creates initSwiper function
