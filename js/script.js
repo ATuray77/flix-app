@@ -289,6 +289,12 @@ async function search(){
 
 //function to display search results begins
 function displaySearchResults(results) {
+    //clear previous results
+    document.querySelector('#search-results').innerHTML = '';
+    document.querySelector('#search-results-heading').innerHTML = '';
+    document.querySelector('#pagination').innerHTML = '';
+
+
     results.forEach((result) => {
         const div = document.createElement('div');
         div.classList.add('card');
@@ -341,11 +347,20 @@ function displayPagination() {
     //disable prev button if on first page
     if(global.search.page === 1) {
         document.querySelector('#prev').disabled = true
-    }
+    } 
+
+    //disable next button if on last page
+    if(global.search.page === global.search.totalPages) {
+        document.querySelector('#next').disabled = true
+    } 
+
+    //Next page - adding event listener to the 'next' button
+    document.querySelector('#next').addEventListener('click', async() => {
+        global.search.page++;
+        const {results, total_pages } = await searchAPIData();
+        displaySearchResults(results);
+    })
 }
-//function to display pagination ends
-//function to display search results ends
-//Search Movies function ends
 
 //creates initSwiper function
 function initSwiper() {
@@ -397,7 +412,7 @@ async function searchAPIData() {
 
     showSpinner();
 
-    const response = await fetch(`${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}`);
+    const response = await fetch(`${API_URL}search/${global.search.type}?api_key=${API_KEY}&language=en-US&query=${global.search.term}&page=${global.search.page}`);
     const data = await response.json();
 
     hideSpinner();
