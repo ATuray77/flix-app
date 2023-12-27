@@ -143,6 +143,11 @@ async function displayMovieDetails(){
     `;
 
     document.querySelector('#movie-details').appendChild(div);
+    //trying to make Back To Movies functional
+    document.querySelector('.btn').addEventListener('click', async() => {
+        const results = await fetchAPIData();
+        return results;
+    })
 }
 
 
